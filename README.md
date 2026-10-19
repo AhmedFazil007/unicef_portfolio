@@ -2,7 +2,7 @@
 
 **Python · SQLite · Public-health data · Data storytelling**
 
-I used this project to practice a complete data-analysis workflow on a subject where the numbers really matter: **how under-five mortality has changed over time, and how progress differs between countries and regions**.
+I chose under-five mortality because a single headline number doesn't tell the full story. I wanted to understand **how under-five mortality has changed over time, and how progress differs between countries and regions**.
 
 I worked with a public dataset sourced through [Our World in Data](https://ourworldindata.org/grapher/child-mortality), drawing on estimates from **UN IGME** (the UNICEF-led inter-agency group) and historical Gapminder data. This is a personal portfolio exercise, **not work completed for UNICEF or another employer**.
 
@@ -34,7 +34,7 @@ These comparisons describe the dataset. They don't explain the causes of mortali
 
 ## Reproduce country trend comparisons
 
-I added a [country trend comparison script](scripts/05_trend_comparisons.py) and [methodology notes](docs/TREND_ANALYSIS.md). It compares 1990 with the latest available estimate and measures the descriptive annual change since 2015 where the data supports it.
+For a closer look, there's a [country trend comparison script](scripts/05_trend_comparisons.py) and [methodology notes](docs/TREND_ANALYSIS.md). It compares 1990 with the latest available estimate and measures the descriptive annual change since 2015 where the data supports it.
 
 ## Why the analysis matters
 
