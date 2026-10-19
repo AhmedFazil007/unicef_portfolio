@@ -1,86 +1,75 @@
-# Under-Five Mortality: Data Cleaning, SQL Analysis & Dashboard
+# Under-Five Mortality | Data Cleaning, SQL & Visualization
 
-**Status: portfolio / practice project — not employer work product.**
+**Python · SQLite · Public-health data · Data storytelling**
 
-This project was built to demonstrate a real, inspectable data-analyst workflow:
-cleaning a public dataset with Python, analyzing it with SQL, and visualizing the
-results — using the same subject-matter family (UNICEF / UN child-welfare data)
-referenced in my CV, but built entirely on public data rather than any employer's
-internal data.
+I used this project to practice a complete data-analysis workflow on a subject where the numbers really matter: **how under-five mortality has changed over time, and how progress differs between countries and regions**.
 
-## Data source
+I worked with a public dataset sourced through [Our World in Data](https://ourworldindata.org/grapher/child-mortality), drawing on estimates from **UN IGME** (the UNICEF-led inter-agency group) and historical Gapminder data. This is a personal portfolio exercise, **not work completed for UNICEF or another employer**.
 
-Our World in Data (`ourworldindata.org/grapher/child-mortality`), which combines:
-- **UN Inter-agency Group for Child Mortality Estimation (UN IGME)** — a collaboration
-  led by **UNICEF** together with WHO, the World Bank, and the UN Population Division
-- **Gapminder** (for historical estimates pre-1990)
+## The question I explored
 
-Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-Downloaded September 2026.
+Which countries in this selected sample have seen the largest reductions since 1990, and where do substantial differences remain?
 
-The extract used here covers 10 countries (Afghanistan, Albania, Algeria, Angola,
-Bangladesh, Brazil, Chad, China, Egypt, Ethiopia) plus 4 regional aggregates
-(Africa, Asia, Europe, European Union), spanning 1950–2024 — 400 raw rows.
+The extract covers **10 countries and 4 regional aggregates**, spanning **1950–2024**, with **400 raw rows**. It's a selected sample—not a global ranking.
 
-## What's in this repo
+## Dashboard and charts
 
-```
-unicef_portfolio/
-├── data/
-│   ├── raw_child_mortality.csv     # as downloaded, unmodified
-│   ├── clean_countries.csv         # cleaned, country-level only
-│   ├── clean_regions.csv           # cleaned, regional aggregates only
-│   └── mortality.db                # SQLite database used for SQL analysis
-├── scripts/
-│   ├── 01_clean_data.py            # pandas cleaning: dedup, missing values, type fixes, split
-│   ├── 02_load_to_sqlite.py        # loads cleaned CSVs into SQLite
-│   ├── 03_run_queries.py           # runs the SQL queries, saves results
-│   └── 04_visualize.py             # generates all charts with matplotlib
-├── sql/
-│   └── queries.sql                 # 5 real SQL queries: ranking, self-join, join, pivot, cross-table
-├── output/
-│   ├── chart_*.png                 # generated charts
-│   ├── query_*.csv                 # query result exports
-│   └── dashboard.html              # standalone dashboard (open directly in a browser)
-└── README.md
-```
+[**Open the browser dashboard**](output/dashboard.html)
 
-## How to reproduce
+![Mortality trends](output/chart_full_timeseries.png)
+
+![Latest country comparison](output/chart_latest_by_country.png)
+
+![Percentage reduction since 1990](output/chart_pct_reduction.png)
+
+![Regional trend](output/chart_regional_trend.png)
+
+## What stood out
+
+- **China** had the largest relative reduction since 1990 in this selected country sample: approximately **89.4%**.
+- **Chad** had the highest latest under-five mortality rate in the sample, at **9.73 per 100 live births (2024)**, and the smallest relative improvement since 1990, about **54.0%**.
+- In the regional series, the **European Union** was at about **0.39 per 100 live births** in 2024 versus **6.63** for **Africa**—a substantial gap despite progress in Africa.
+
+These comparisons describe the dataset. They don't explain the causes of mortality changes, and I wouldn't use a small country sample to rank the world.
+
+## Why the analysis matters
+
+I think a useful public-health dashboard should show both **progress and remaining gaps**. Looking only at percentage improvement can hide countries where mortality is still high; looking only at the latest rate can hide decades of progress.
+
+If I were extending the analysis, I'd compare the trends with other public indicators—such as healthcare access, vaccination and income—while being careful not to treat correlation as causation.
+
+## How I worked through the data
+
+1. Checked missing values and duplicate entity-year records.
+2. Separated country rows from regional aggregates so country comparisons weren't distorted.
+3. Standardized types and checked rate ranges.
+4. Loaded the cleaned data into SQLite and ran SQL queries for latest values, historical changes and regional comparisons.
+5. Produced charts and a browser-based dashboard.
+
+## Files and reproduction
+
+| Path | Contents |
+|---|---|
+| [data/](data/) | Raw and cleaned CSVs, SQLite database |
+| [scripts/](scripts/) | Cleaning, loading, querying and chart-generation scripts |
+| [sql/queries.sql](sql/queries.sql) | SQL analysis |
+| [output/](output/) | Charts, query exports and HTML dashboard |
+
+Run the scripts in sequence from the `scripts` folder:
 
 ```bash
-cd scripts
-python3 01_clean_data.py
-python3 02_load_to_sqlite.py
-python3 03_run_queries.py
-python3 04_visualize.py
+python 01_clean_data.py
+python 02_load_to_sqlite.py
+python 03_run_queries.py
+python 04_visualize.py
 ```
 
-## Cleaning steps taken
+## Data source and limitations
 
-1. Checked for missing values (none found in this extract).
-2. Checked for duplicate `(entity, year)` records (none found).
-3. Separated country-level rows from regional/continental aggregates — OWID marks
-   aggregates with an `OWID_`-prefixed code (e.g. `OWID_AFR` for Africa), which must
-   be excluded from country-level rankings or they distort the comparison.
-4. Standardized types (year → int, rate → float) and stripped whitespace from names.
-5. Range-checked all rate values against a plausible 0–100 band.
+Source: [Our World in Data — Child Mortality](https://ourworldindata.org/grapher/child-mortality), including UN IGME and historical Gapminder estimates. The data was downloaded in September 2026 and is available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## SQL techniques demonstrated
+The figures are historical estimates, not direct measurements for every location and year. This is an independent practice project, not an official UNICEF dashboard or an evaluation of any particular health intervention.
 
-- Subquery + join to find each country's most recent reported year
-- Self-join to compute percentage change between two time points (1990 vs. latest)
-- Join against a separate lookup table (`country_meta`)
-- Conditional aggregation (`CASE WHEN`) to pivot years into columns
-- Cross-table comparison (countries vs. regional average)
+---
 
-## Key findings
-
-- China shows the largest relative improvement since 1990 (-89.4%).
-- Chad has both the highest current rate (9.73 per 100 live births, 2024) and the
-  smallest relative improvement since 1990 (-54.0%) in this dataset.
-- The EU's 2024 average (0.39) is roughly 17x lower than Africa's (6.63), though
-  Africa has still cut its rate by more than half since 1990.
-
-## Author
-
-Ahmed Fazil — built as a self-directed practice project.
+[Ahmed Fazil](https://github.com/AhmedFazil007)
