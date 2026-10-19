@@ -32,6 +32,10 @@ The extract covers **10 countries and 4 regional aggregates**, spanning **1950â€
 
 These comparisons describe the dataset. They don't explain the causes of mortality changes, and I wouldn't use a small country sample to rank the world.
 
+## Reproduce country trend comparisons
+
+I added a [country trend comparison script](scripts/05_trend_comparisons.py) and [methodology notes](docs/TREND_ANALYSIS.md). It compares 1990 with the latest available estimate and measures the descriptive annual change since 2015 where the data supports it.
+
 ## Why the analysis matters
 
 I think a useful public-health dashboard should show both **progress and remaining gaps**. Looking only at percentage improvement can hide countries where mortality is still high; looking only at the latest rate can hide decades of progress.
